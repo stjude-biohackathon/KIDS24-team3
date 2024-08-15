@@ -1,6 +1,6 @@
 # KIDS24-team3
 
-<img src="public/server-logo.png" width="72">
+<img src="public/server-logo.png" width="128">
 
 # Optimizing High-Performance Computing Resource Allocation Through Statistical Analysis
 
