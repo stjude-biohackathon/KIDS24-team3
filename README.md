@@ -1,4 +1,7 @@
 # KIDS24-team3
+
+<img src="public/server-logo.png" width="72">
+
 # Optimizing High-Performance Computing Resource Allocation Through Statistical Analysis
 
 Welcome to our GitHub repository for the KIDS24 BioHackathon challenge! 🎉 This repository will serve as the central hub for all our code, data, and documentation.
