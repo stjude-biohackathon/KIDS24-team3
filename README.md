@@ -37,7 +37,15 @@ Our mission is to leverage our collective expertise to improve the understanding
 
 ## Resources
 
-HPC metrics dataset
+### Offical Schedule
+
+![offical schedule](public/schedule.png)
+
++ BioHackathon Opening Reception Night. 5:30 PM Sept 3, ARC Lobby
+
+### HPC metrics dataset
+
+TODO
 
 ## Progress
 
