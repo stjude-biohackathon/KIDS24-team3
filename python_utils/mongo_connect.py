@@ -5,7 +5,7 @@ from pprint import pprint
 def mongo_connect(uri):
     # returns the mongodb client
     try:
-        client = pymongo.MongoClient(mongo_uri)
+        client = pymongo.MongoClient(uri)
     except pymongo.errors.ConfigurationError:
         print("Invalid MongoDB URI")
         exit(1)
