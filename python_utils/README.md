@@ -31,7 +31,7 @@ We collect all finished jobs which `submitTime>08/19/24 && endTime <= 08/26/24`.
 ### `mongoexport` command
 
 ```
-mongoexport --collection=finished_jobs --db=lsf --out=finished_jobs_1_week.csv --fields "userId,jobId,jobIdx,numProcessors,jStatus,submitTime,startTime,endTime,queues,resReq,maxRMem,command,cpuTime,runTime" --query '{ "submitTime": { "$gt": 1724043600 }, "endTime": { "$lte": 1724648400 } }' --sort '{"submitTime": 1}'
+mongoexport --collection=finished_jobs --db=lsf --out=finished_jobs_1_week.csv --fields "userId,jobId,jobIdx,numProcessors,jStatus,submitTime,startTime,endTime,queues,resReq,maxRMem,command,cpuTime,runTime" --query '{ "submitTime": { "$gt": 1724043600 }, "endTime": { "$lte": 1724648400 } }' --sort '{"submitTime": 1}' --type=csv
 ```
 
 ### CSV file
