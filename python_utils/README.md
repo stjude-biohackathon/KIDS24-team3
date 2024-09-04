@@ -34,6 +34,10 @@ We collect all finished jobs which `submitTime>08/19/24 && endTime <= 08/25/24`.
 mongoexport --collection=finished_jobs --db=lsf --out=finished_jobs_1_week.csv --fields "userId,jobId,jobIdx,numProcessors,jStatus,submitTime,startTime,endTime,queues,resReq,maxRMem,command,cpuTime,runTime" --query '{ "submitTime": { "$gt": 1724025600 }, "endTime": { "$lte": 1724544000 } }' --sort '{"submitTime": 1}'
 ```
 
+### CSV file
+
+Check out `/home/lead/notebooks/common/finished_jobs_1_week.csv`
+
 
 ## Interesting ideas
 - categorize submitTime timeOfDay/dayOfWeek/..
