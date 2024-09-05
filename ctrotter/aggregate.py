@@ -49,11 +49,14 @@ def tally_jobs(df):
             row[queue + '_pending_jobs'] = pending_jobs[pending_jobs['queue']
                                                         == queue].shape[0]
 
-            # tally the total cores and memory using in running jobs
+            # tally the total cores and memory using in running jobs, but take out the ones that finished the job in the time interval
+            finished_jobs = running_jobs[running_jobs['endTime']
+                                         <= time_interval_end]
+
             row[queue + '_total_cores'] = running_jobs['numProcessors'].sum(
-            )
+            ) - finished_jobs['numProcessors'].sum()
             row[queue + '_total_memory'] = running_jobs['maxRMem'].sum(
-            )
+            ) - finished_jobs['maxRMem'].sum()
 
         # for user in df['userId'].unique():
         #     user_running_jobs = running_jobs[running_jobs['userId'] == user]
