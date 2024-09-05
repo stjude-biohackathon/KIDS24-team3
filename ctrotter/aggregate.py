@@ -58,13 +58,11 @@ def tally_jobs(df):
             row[queue + '_total_memory'] = running_jobs['maxRMem'].sum(
             ) - finished_jobs['maxRMem'].sum()
 
-        # for user in df['userId'].unique():
-        #     user_running_jobs = running_jobs[running_jobs['userId'] == user]
-        #     user_pending_jobs = pending_jobs[pending_jobs['userId'] == user]
-        #     jobs_in_queue_df[user +
-        #                      '_running_jobs'] = user_running_jobs.shape[0]
-        #     jobs_in_queue_df[user +
-        #                      '_pending_jobs'] = user_pending_jobs.shape[0]
+        for user in df['userId'].unique():
+            user_running_jobs = running_jobs[running_jobs['userId'] == user]
+            user_pending_jobs = pending_jobs[pending_jobs['userId'] == user]
+            row[str(user) + '_running_jobs'] = user_running_jobs.shape[0]
+            row[str(user) + '_pending_jobs'] = user_pending_jobs.shape[0]
 
         # append the row to the dataframe
         jobs_in_queue.append(row)
