@@ -18,9 +18,12 @@
 import pandas as pd
 
 
-def tally_jobs(df):
-    epoch_start_time = 1724043600
-    epoch_end_time = 1724648400
+def tally_jobs(df, queue_info_df):
+    # epoch_start_time = 1724043600
+    # epoch_end_time = 1724648400
+    epoch_start_time = 1724151600
+    epoch_end_time = 1724173200
+
     jobs_in_queue = []
     interval = 60 * 15  # 15 minute
 
@@ -43,35 +46,60 @@ def tally_jobs(df):
 
         # pending_jobs = df[(df['submitTime'] <= i) & (df['startTime'] > i)]
         for queue in df['queue'].unique():
+            queue_running_jobs = running_jobs[running_jobs['queue'] == queue]
+            queue_pending_jobs = pending_jobs[pending_jobs['queue'] == queue]
 
-            row[queue + '_running_jobs'] = running_jobs[running_jobs['queue']
-                                                        == queue].shape[0]
-            row[queue + '_pending_jobs'] = pending_jobs[pending_jobs['queue']
-                                                        == queue].shape[0]
+            row[queue + '_running_jobs'] = queue_running_jobs.shape[0]
+            row[queue + '_pending_jobs'] = queue_pending_jobs.shape[0]
 
             # tally the total cores and memory using in running jobs, but take out the ones that finished the job in the time interval
-            finished_jobs = running_jobs[running_jobs['endTime']
-                                         <= time_interval_end]
+            queue_finished_jobs = queue_running_jobs[queue_running_jobs['endTime']
+                                                     <= time_interval_end]
 
-            row[queue + '_total_cores'] = running_jobs['numProcessors'].sum(
-            ) - finished_jobs['numProcessors'].sum()
-            row[queue + '_total_memory'] = running_jobs['maxRMem'].sum(
-            ) - finished_jobs['maxRMem'].sum()
+            row[queue + '_total_cores'] = queue_running_jobs['numProcessors'].sum(
+            ) - queue_finished_jobs['numProcessors'].sum()
+            row[queue + '_total_memory'] = queue_running_jobs['maxRMem'].sum(
+            ) - queue_finished_jobs['maxRMem'].sum()
 
-        for user in df['userId'].unique():
-            user_running_jobs = running_jobs[running_jobs['userId'] == user]
-            user_pending_jobs = pending_jobs[pending_jobs['userId'] == user]
-            row[str(user) + '_running_jobs'] = user_running_jobs.shape[0]
-            row[str(user) + '_pending_jobs'] = user_pending_jobs.shape[0]
+            row[queue + '_available_cores'] = queue_info_df[queue_info_df['queue']
+                                                            == queue]['cpu_cores'].values[0] - row[queue + '_total_cores']
+            row[queue + '_available_memory'] = queue_info_df[queue_info_df['queue']
+                                                             == queue]['mem'].values[0] - row[queue + '_total_memory']
+
+        # for user in df['userId'].unique():
+        #     user_running_jobs = running_jobs[running_jobs['userId'] == user]
+        #     user_pending_jobs = pending_jobs[pending_jobs['userId'] == user]
+        #     row[str(user) + '_running_jobs'] = user_running_jobs.shape[0]
+        #     row[str(user) + '_pending_jobs'] = user_pending_jobs.shape[0]
 
         # append the row to the dataframe
         jobs_in_queue.append(row)
     return pd.DataFrame(jobs_in_queue)
 
 
+def get_queue_info(queue_json):
+    queue_info = pd.read_json(queue_json)
+    queue_name = queue_info['queueName']
+    queue_cores = queue_info['cpu_cores']
+    queue_mem = queue_info['mem']
+    queue_description = queue_info['description']
+    # construct a dataframe to store the queue information
+    queue_info_df = pd.DataFrame(
+        {'queue': queue_name,
+         'cpu_cores': queue_cores,
+         'mem': queue_mem,
+         'description': queue_description})
+    return queue_info_df
+
+
 def main():
     df = pd.read_csv('./finished_jobs_1_week.csv')
-    tally_result = tally_jobs(df)
+
+    # read in queue_info.json
+    queue_info_df = get_queue_info('./queue_info.json')
+
+    tally_result = tally_jobs(df, queue_info_df)
+
     tally_result.to_csv('tally_result.csv', index=False)
 
 
